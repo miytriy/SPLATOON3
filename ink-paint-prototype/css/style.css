@@ -1,0 +1,78 @@
+:root{
+  --bg: #14161c;
+  --panel: #1d2029;
+  --ink: #ff5a1f;      /* プレイヤー陣営のインク色（スプラトゥーンのオレンジを意識） */
+  --ink-dark: #b5390f;
+  --floor: #2a2d38;
+  --wall: #0b0c10;
+  --text: #eef0f4;
+  --muted: #7d8394;
+  --accent: #33e6c0;
+}
+html,body{
+  margin:0; height:100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Helvetica Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+#app{ display:flex; flex-direction:column; gap:14px; align-items:center; }
+h1{
+  font-size:15px; letter-spacing:.14em; text-transform:uppercase;
+  color: var(--muted); font-weight:600; margin:0;
+}
+h1 span{ color: var(--ink); }
+#stage-wrap{
+  position:relative; border-radius:10px; overflow:hidden;
+  box-shadow: 0 0 0 1px #33384a, 0 20px 50px -20px #000;
+}
+canvas{ display:block; background: var(--floor); }
+#hud{
+  position:absolute; top:12px; left:12px; right:12px;
+  display:flex; justify-content:space-between; align-items:flex-start;
+  pointer-events:none; font-variant-numeric: tabular-nums;
+}
+.card{
+  background: rgba(13,14,18,.72); backdrop-filter: blur(4px);
+  border: 1px solid #33384a; border-radius:8px; padding:8px 12px;
+}
+#coverage-label{ font-size:11px; color: var(--muted); letter-spacing:.08em; }
+#coverage-value{ font-size:22px; font-weight:700; color: var(--accent); }
+#ink-gauge-outer{
+  width:120px; height:8px; border-radius:4px; background:#0b0c10;
+  overflow:hidden; margin-top:6px; border:1px solid #33384a;
+  position:relative;
+}
+#ink-gauge-inner{
+  height:100%; width:100%; background: linear-gradient(90deg, var(--ink-dark), var(--ink));
+  transition: width .08s linear;
+}
+#ink-predict-band{
+  position:absolute; top:0; left:0; height:100%; width:0;
+  background: rgba(255,255,255,0.85);
+  transition: left .08s linear, width .08s linear, opacity .12s linear;
+  opacity:0;
+  pointer-events:none;
+}
+#swim-badge{
+  font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  color: var(--muted); margin-top:6px; transition:color .15s;
+}
+#swim-badge.active{ color: var(--accent); }
+#footer{
+  display:flex; gap:18px; font-size:12px; color: var(--muted);
+}
+#footer b{ color: var(--text); }
+kbd{
+  background:#0b0c10; border:1px solid #33384a; border-radius:4px;
+  padding:1px 6px; font-family: inherit; color:var(--text);
+}
+button{
+  background: var(--panel); color: var(--text); border:1px solid #33384a;
+  border-radius:6px; padding:5px 12px; font-size:12px; cursor:pointer;
+}
+button:hover{ border-color: var(--ink); }
+#weapon-switch{ display:flex; gap:6px; }
+#weapon-switch button{ padding:4px 10px; }
+#weapon-switch button.active{ border-color: var(--ink); color: var(--ink); }

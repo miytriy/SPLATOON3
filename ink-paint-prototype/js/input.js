@@ -1,5 +1,5 @@
 import { stage } from './stage.js';
-import { player, getCurrentWeapon, resetBurstShotCount } from './player.js';
+import { player, getCurrentWeapon, resetBurstShotCount, requestSubWeaponArm, cancelSubWeaponArm, useSubWeapon, fireSpecialWeapon } from './player.js';
 import { fireChargerShot } from './charger.js';
 import { resetPaint } from './game-control.js';
 
@@ -22,13 +22,20 @@ export let aimLocked = false;
 window.addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (k in keys) keys[k] = true;
-  if (k === 'r') resetPaint();
+  // サブウェポン用: 押した段階では構える(arm)だけ。離したときに発動する。
+  if (k === 'e') requestSubWeaponArm();
+  // スペシャルは押した時点で発動
+  if (k === 'r') fireSpecialWeapon();
+  // インクリセットを N に変更
+  if (k === 'n') resetPaint();
   if (e.key === 'Shift') aimLocked = true;
 });
 window.addEventListener('keyup', e => {
   const k = e.key.toLowerCase();
   if (k in keys) keys[k] = false;
   if (e.key === 'Shift') aimLocked = false;
+  // E を離したときにサブウェポンを使用
+  if (k === 'e') useSubWeapon();
 });
 stage.addEventListener('mousemove', e => {
   const r = stage.getBoundingClientRect();
@@ -58,6 +65,8 @@ stage.addEventListener('mousedown', e => {
           player.chargeKeepActive = false;
         }
       }
+      // Eキーで構えていたサブウェポンの状態は、イカ化でキャンセルされる
+      cancelSubWeaponArm();
       player.form = 'squid';
     }
   }

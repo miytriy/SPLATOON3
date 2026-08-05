@@ -3,6 +3,7 @@ import './ui.js';        // 副作用: HUD初期表示・ブキ切替ボタン�
 import { updatePlayer } from './simulation.js';
 import { updateProjectiles } from './projectiles.js';
 import { render } from './ui.js';
+import { updateSpecials } from './specials.js';
 
 /* ==========================================================================
    main.js — エントリポイント・メインループ
@@ -17,6 +18,7 @@ function loop(now){
 
   updatePlayer(dt);
   updateProjectiles(dt);
+  updateSpecials(dt);
   render();
 
   requestAnimationFrame(loop);

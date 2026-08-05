@@ -1,5 +1,6 @@
 import './input.js';     // 副作用: キーボード/マウスのイベントリスナーを登録
 import './ui.js';        // 副作用: HUD初期表示・ブキ切替ボタン生成・スコアの定期更新を開始
+import './subweapons.js'; // サブウェポンモジュール（useSubWeapon イベントを受ける）
 import { updatePlayer } from './simulation.js';
 import { updateProjectiles } from './projectiles.js';
 import { render } from './ui.js';

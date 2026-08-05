@@ -140,3 +140,60 @@ export function switchWeapon(index){
   resetChargerRuntimeState();
   return true;
 }
+
+// --- サブウェポン / スペシャル用の操作 API ---
+// input.js から呼ばれる軽いハンドラ群。サブウェポン/スペシャルの本体処理
+// は別モジュール（未実装）または既存のロジック側で CustomEvent を受けて
+// 実行する想定。まずはキーイベントから安全に呼べる共通フックを提供する。
+
+// フラグ: E を押して構えている状態を保持（UI 用や後続ロジックで参照可能）
+player.subWeaponArmRequested = false;
+player.subWeaponArmHeld = false;
+player.subWeaponArmStartedAt = 0;
+
+/**
+ * 押したときに呼ぶ — 「構え」を開始する（実際の投擲は離したときに行う）。
+ */
+export function requestSubWeaponArm(){
+  player.subWeaponArmRequested = true;
+  player.subWeaponArmHeld = true;
+  player.subWeaponArmStartedAt = performance.now();
+  // 将来的に UI の発光や弾道表示を開始したければここで発火:
+  window.dispatchEvent(new CustomEvent('subWeaponArmStart', { detail: { startedAt: player.subWeaponArmStartedAt } }));
+}
+
+/**
+ * イカ化やキャンセル時に呼ぶ — 構え状態を解除する。
+ */
+export function cancelSubWeaponArm(){
+  player.subWeaponArmRequested = false;
+  player.subWeaponArmHeld = false;
+  player.subWeaponArmStartedAt = 0;
+  window.dispatchEvent(new CustomEvent('subWeaponArmCancel'));
+}
+
+/**
+ * 離したときに呼ぶ — 実際にサブウェポンを使用する。
+ * 引数は不要（input.js からそのまま呼ばれる）だが、将来的に
+ * マウス座標等が要る場合はそれを渡すように拡張してください。
+ */
+export function useSubWeapon(){
+  if (!player.subWeaponArmRequested) return;
+  // サブ使用時の共通副作用: 構えフラグクリア／サブ使用後の後隙等は
+  // ここで発火するか、sub-weapon モジュール側で受けて処理させる。
+  player.subWeaponArmRequested = false;
+  player.subWeaponArmHeld = false;
+  player.subWeaponArmStartedAt = 0;
+
+  // event を投げて実体処理を分離（既存コードに手を入れず安全に連携可能）。
+  window.dispatchEvent(new CustomEvent('useSubWeapon', { detail: { at: performance.now() } }));
+}
+
+/**
+ * スペシャル発動トリガー（Rを押した瞬間に呼ばれる）。
+ * ここも実処理は別モジュール／リスナで受ける想定にしておくと安全です。
+ */
+export function fireSpecialWeapon(){
+  // スペシャル発動時の共通副作用（インク消費チェック等）は別モジュールで行ってください。
+  window.dispatchEvent(new CustomEvent('fireSpecialWeapon', { detail: { at: performance.now() } }));
+}
